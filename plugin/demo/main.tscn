@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cg3hylang5fxn"]
+[gd_scene load_steps=3 format=3 uid="uid://cg3hylang5fxn"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_j0gfq"]
+[ext_resource type="Script" uid="uid://d25jwt6qd0blf" path="res://main.gd" id="1_j0gfq"]
+[ext_resource type="AudioStream" uid="uid://6kr0yv5d7xtd" path="res://Akapellah - La Sabia Escuela ft. Lil Supa _ Canserbero (Prod by GBEC _ Afromak) _CanZooPellah(MP3_160K).mp3" id="2_0xm2m"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_j0gfq")
@@ -15,5 +16,10 @@ offset_top = 250.0
 offset_right = 320.0
 offset_bottom = 312.0
 text = "Hello World"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_0xm2m")
+autoplay = true
+parameters/looping = false
 
 [connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
