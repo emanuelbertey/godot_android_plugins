@@ -13,7 +13,7 @@ val pluginPackageName = "org.godotengine.plugin.android.template"
 
 android {
     namespace = pluginPackageName
-    compileSdk = 34
+    compileSdk = 35
 
     buildFeatures {
         buildConfig = true
@@ -21,6 +21,7 @@ android {
 
     defaultConfig {
         minSdk = 26
+        targetSdk = 35
 
         manifestPlaceholders["godotPluginName"] = pluginName
         manifestPlaceholders["godotPluginPackageName"] = pluginPackageName

@@ -49,19 +49,42 @@ class GodotAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
             // Aquí podrías usar GodotLib.calldeferred("GameControl", "play_script") si lo conectás vía JNI
         }
     }
+
+    @UsedByGodot
+    fun stop_foreground_service() {
+        activity?.let {
+            val intent = Intent(it, GodotService::class.java)
+            it.stopService(intent)
+        } ?: Log.e(pluginName, "Activity is null, cannot stop service")
+    }
 }
 
 class GodotService : Service() {
+    companion object {
+        const val ACTION_STOP_SERVICE = "STOP_SERVICE"
+    }
+
     override fun onCreate() {
         super.onCreate()
         val channelId = "godot_channel"
         val channel = NotificationChannel(channelId, "Godot Service", NotificationManager.IMPORTANCE_LOW)
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
 
+        val stopIntent = Intent(this, GodotService::class.java).apply {
+            action = ACTION_STOP_SERVICE
+        }
+        val stopPendingIntent = PendingIntent.getService(
+            this, 
+            0, 
+            stopIntent, 
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
         val notification = Notification.Builder(this, channelId)
             .setContentTitle("Godot Service")
             .setContentText("Running in background")
             .setSmallIcon(android.R.drawable.ic_media_play)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Cerrar", stopPendingIntent)
             .build()
 
         startForeground(1, notification)
@@ -69,6 +92,12 @@ class GodotService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_STOP_SERVICE) {
+            Log.v("GodotService", "Deteniendo servicio desde notificación")
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            stopSelf()
+            return START_NOT_STICKY
+        }
         return START_STICKY
     }
 

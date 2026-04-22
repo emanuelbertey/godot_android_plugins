@@ -1,0 +1,2 @@
+.\gradlew.bat assemble
+.\gradlew.bat clean assemble
